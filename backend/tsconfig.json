@@ -1,7 +1,6 @@
 {
-  // Visit https://aka.ms/tsconfig to read more about this file
   "compilerOptions": {
-     "module": "nodenext",
+    "module": "nodenext",
     "moduleResolution": "nodenext",
     "target": "esnext",
     "strict": true,
@@ -14,10 +13,10 @@
     "sourceMap": true,
     "declaration": true,
     "declarationMap": true,
-    "allowImportingTsExtensions": true,   
+    "allowImportingTsExtensions": true,
     "noEmit": true
   },
-"include": ["./"],
+  "include": ["./"],
 
   "exclude": ["node_modules", "dist"]
 }

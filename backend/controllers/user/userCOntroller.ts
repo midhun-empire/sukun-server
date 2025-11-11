@@ -1,4 +1,6 @@
-import User from "../../models/user.js";
+import { styleText } from "node:util";
+import User from "../../models/user.ts";
+
 import type { Request, Response } from "express";
 
 const otpStore: Record<string, string> = {};
@@ -69,6 +71,9 @@ export const Login = async (req: Request, res: Response) => {
 
     return res.status(200).json({ message: "OTP Sent", next: "/otp" });
   } catch (error) {
+    if (error instanceof Error) {
+      console.error(styleText("red", error.message));
+    }
     return res.status(500).json({ message: "Server Error" });
   }
 };

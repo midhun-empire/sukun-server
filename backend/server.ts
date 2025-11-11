@@ -1,20 +1,29 @@
-import express from "express"
-import dotenv from 'dotenv'
-import connectDB from './config/db.js'
-import userRoutes from './routes/userRoutes.js'
+import express from "express";
+import dotenv from "dotenv";
+import connectDB from "./config/db.js";
+import userRoutes from "./routes/userRoutes.js";
+import { styleText } from "node:util";
+import morgan from "morgan";
 
-dotenv.config()
+dotenv.config();
 
+const app = express();
 
-const app = express()
-app.use(express.json())
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(morgan("dev")); // Use morgan middleware to log HTTP requests in the 'dev' format
 
-await connectDB()
+await connectDB();
 
+app.use("/", userRoutes);
 
-app.use('/',userRoutes)
+const port = process.env.PORT;
 
-
-
-
-app.listen(process.env.PORT,()=>console.log('Server running'))
+app.listen(port, () =>
+  console.log(
+    `Server running on ${styleText(
+      ["underline", "blue", "bold"],
+      `🚀 http://localhost:${port}`
+    )}`
+  )
+);
