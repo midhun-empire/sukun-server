@@ -10,6 +10,8 @@ function generateOtp() {
 }
 
 export const sendOtp = async (req: Request, res: Response) => {
+  // console.log("body log:", req.body);
+
   try {
     const { phone } = req.body;
 
@@ -26,6 +28,7 @@ export const sendOtp = async (req: Request, res: Response) => {
       next: "/otp", // For front use , can be change later
     });
   } catch (error) {
+    console.log(error);
     return res.status(500).json({ message: "Server Error" });
   }
 };
@@ -38,6 +41,7 @@ export const verifyOtp = async (req: Request, res: Response) => {
       return res.status(400).json({ message: "Phone and OTP required" });
 
     const storedOtp = otpStore[phone];
+    console.log(storedOtp);
 
     if (!storedOtp)
       return res.status(400).json({ message: "OTP expired or not requested" });
@@ -52,6 +56,7 @@ export const verifyOtp = async (req: Request, res: Response) => {
       login: true,
     });
   } catch (error) {
+    console.error(error);
     return res.status(500).json({ message: "Server Error" });
   }
 };
@@ -98,6 +103,7 @@ export const registerUser = async (req: Request, res: Response) => {
       next: "/otp",
     });
   } catch (error) {
+    console.log(error);
     return res.status(500).json({ message: "Server Error" });
   }
 };
