@@ -24,7 +24,7 @@ const port = process.env.PORT;
 app.listen(port, () =>
   console.log(
     `Server running on ${styleText(
-      ["underline", "blue", "bold"],
+      ["underline", "blue", "bold"],  
       `🚀 http://localhost:${port}`
     )}`
   )
