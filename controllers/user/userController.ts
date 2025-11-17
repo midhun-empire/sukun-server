@@ -1,17 +1,19 @@
+import dotenv from "dotenv";
+dotenv.config();
+
 import { styleText } from "node:util";
-import passport from "passport"
+import passport from "passport";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import User from "../../models/user.ts";
-import jwt from 'jsonwebtoken'
+import jwt from "jsonwebtoken";
 import type { Request, Response } from "express";
+
+// import utils
+import { generateOtp } from "../../utils/generateOtp.ts";
 
 //User Registration and Login
 
 const otpStore: Record<string, string> = {};
-
-function generateOtp() {
-  return Math.floor(100000 + Math.random() * 900000).toString();
-}
 
 export const sendOtp = async (req: Request, res: Response) => {
   // console.log("body log:", req.body);
@@ -131,18 +133,13 @@ export const resendOtp = async (req: Request, res: Response) => {
   }
 };
 
-
-
-//google aAuth login 
-
-
-
+//google aAuth login
 passport.use(
   new GoogleStrategy(
     {
       clientID: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-      callbackURL: "http://localhost:3000/google/callback"
+      callbackURL: "http://localhost:3000/google/callback",
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
@@ -150,8 +147,7 @@ passport.use(
         const username = profile.displayName;
         const googleId = profile.id;
 
-        if (!email)
-          return done(null, false);  // cannot continue without email
+        if (!email) return done(null, false); // cannot continue without email
 
         // Check if a user already exists using email
         let user = await User.findOne({ email });
@@ -162,7 +158,7 @@ passport.use(
             username,
             email,
             googleId,
-            phone: null
+            phone: null,
           });
         }
 
@@ -181,13 +177,3 @@ passport.use(
     }
   )
 );
-
-export const googleCallback = (req: Request, res: Response) => {
-  const { user, token } = req.user as any;
-
-  return res.status(200).json({
-    message: "Google Login Successful",
-    user,
-    token
-  });
-};
