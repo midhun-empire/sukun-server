@@ -10,6 +10,7 @@ import type { Request, Response } from "express";
 
 // import utils
 import { generateOtp } from "../../utils/generateOtp.ts";
+import userService from "../../services/userService.ts";
 
 //User Registration and Login
 
@@ -146,6 +147,8 @@ passport.use(
         const email = profile.emails?.[0]?.value;
         const username = profile.displayName;
         const googleId = profile.id;
+        const googleAvatarUrl =
+          profile?._json?.picture ?? profile.photos?.[0]?.value ?? null;
 
         if (!email) return done(null, false); // cannot continue without email
 
@@ -160,6 +163,18 @@ passport.use(
             googleId,
             phone: null,
           });
+        }
+
+        const defaultAvatarUrl =
+          "https://api.dicebear.com/7.x/initials/svg?seed=User";
+        const avatarUrl = await userService.storeGoogleAvatar({
+          url: googleAvatarUrl || defaultAvatarUrl,
+          userId: user._id.toString(),
+        });
+
+        if (!user.avatar || user.avatar !== avatarUrl) {
+          user.avatar = avatarUrl as string;
+          await user.save();
         }
 
         // Generate JWT
